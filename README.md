@@ -50,7 +50,7 @@ detection_evaluate_layer.cpp:221:60: error: ‘__gnu_cxx::__alloc_traits<std::al
   221 |             top_data[num_det * EVAL_SHAPE + 9] = bboxes[i].idx();
       |                                                            ^~~
 ```
-The function `.idx()` has not been used by the original Caffe distribution.  
+The function `.idx()` has not been used by the original [Caffe_ssd][2] branch.  
 If anybody knows how to fix this error, feel free to contact me through issues or by email dmitriybadretdinov@gmail.com.
 
 [1]: http://arxiv.org/abs/1811.08011
