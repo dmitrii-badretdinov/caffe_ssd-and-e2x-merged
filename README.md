@@ -16,6 +16,8 @@ sudo apt-get install --no-install-recommends libboost-all-dev
 sudo apt-get install libatlas-base-dev
 sudo apt-get install python3-dev
 sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+sudo apt-get install python3-pip
+pip install numpy
 ```
 After that, we need to install OpenCV 3.x from their [releases][6]. We'll follow [this manual][7]  
 In the unpacked OpenCV release (substitute `%P%` with the number of cores for compilation):
