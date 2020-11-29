@@ -7,6 +7,8 @@
 #include "caffe/net.hpp"
 #include "caffe/solver_factory.hpp"
 
+#define EVAL_SHAPE 10 //5
+
 namespace caffe {
 
 /**

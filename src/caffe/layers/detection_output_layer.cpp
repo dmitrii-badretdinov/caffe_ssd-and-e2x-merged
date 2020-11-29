@@ -43,7 +43,7 @@ void DetectionOutputLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   output_directory_ = save_output_param.output_directory();
   if (!output_directory_.empty()) {
     if (boost::filesystem::is_directory(output_directory_)) {
-      // boost::filesystem::remove_all(output_directory_);
+      boost::filesystem::remove_all(output_directory_);
     }
     if (!boost::filesystem::create_directories(output_directory_)) {
         LOG(WARNING) << "Failed to create directory: " << output_directory_;
@@ -170,9 +170,9 @@ void DetectionOutputLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   // Since the number of bboxes to be kept is unknown before nms, we manually
   // set it to (fake) 1.
   top_shape.push_back(1);
-  // Each row is a 7 dimension vector, which stores
-  // [image_id, label, confidence, xmin, ymin, xmax, ymax]
-  top_shape.push_back(7);
+  // Each row is a DET_SHAPE dimension vector, which stores
+  // [image_id, label, confidence, xmin, ymin, xmax, ymax, idx]
+  top_shape.push_back(DET_SHAPE);
   top[0]->Reshape(top_shape);
 }
 
@@ -276,7 +276,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
 
   vector<int> top_shape(2, 1);
   top_shape.push_back(num_kept);
-  top_shape.push_back(7);
+  top_shape.push_back(DET_SHAPE);
   Dtype* top_data;
   if (num_kept == 0) {
     LOG(INFO) << "Couldn't find any detections";
@@ -287,7 +287,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
     // Generate fake results per image.
     for (int i = 0; i < num; ++i) {
       top_data[0] = i;
-      top_data += 7;
+      top_data += DET_SHAPE;
     }
   } else {
     top[0]->Reshape(top_shape);
@@ -324,19 +324,20 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
       }
       for (int j = 0; j < indices.size(); ++j) {
         int idx = indices[j];
-        top_data[count * 7] = i;
-        top_data[count * 7 + 1] = label;
-        top_data[count * 7 + 2] = scores[idx];
+        top_data[count * DET_SHAPE + 0] = i;
+        top_data[count * DET_SHAPE + 1] = label;
+        top_data[count * DET_SHAPE + 2] = scores[idx];
         const NormalizedBBox& bbox = bboxes[idx];
-        top_data[count * 7 + 3] = bbox.xmin();
-        top_data[count * 7 + 4] = bbox.ymin();
-        top_data[count * 7 + 5] = bbox.xmax();
-        top_data[count * 7 + 6] = bbox.ymax();
+        top_data[count * DET_SHAPE + 3] = bbox.xmin();
+        top_data[count * DET_SHAPE + 4] = bbox.ymin();
+        top_data[count * DET_SHAPE + 5] = bbox.xmax();
+        top_data[count * DET_SHAPE + 6] = bbox.ymax();
+        top_data[count * DET_SHAPE + 7] = idx;
         if (need_save_) {
           NormalizedBBox out_bbox;
           OutputBBox(bbox, sizes_[name_count_], has_resize_, resize_param_,
                      &out_bbox);
-          float score = top_data[count * 7 + 2];
+          float score = top_data[count * DET_SHAPE + 2];
           float xmin = out_bbox.xmin();
           float ymin = out_bbox.ymin();
           float xmax = out_bbox.xmax();

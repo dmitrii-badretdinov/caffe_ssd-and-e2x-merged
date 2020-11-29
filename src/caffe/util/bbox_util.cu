@@ -495,14 +495,14 @@ __global__ void GetDetectionsKernel(const int nthreads,
           Dtype* detection_data) {
   CUDA_KERNEL_LOOP(index, nthreads) {
     const int det_idx = indices[index];
-    detection_data[index * 7] = image_id;
-    detection_data[index * 7 + 1] = label;
-    detection_data[index * 7 + 2] = conf_data[det_idx];
+    detection_data[index * DET_SHAPE + 0] = image_id;
+    detection_data[index * DET_SHAPE + 1] = label;
+    detection_data[index * DET_SHAPE + 2] = conf_data[det_idx];
     if (clip_bbox) {
-      ClipBBoxGPU(&(bbox_data[det_idx * 4]), &(detection_data[index * 7 + 3]));
+      ClipBBoxGPU(&(bbox_data[det_idx * 4]), &(detection_data[index * DET_SHAPE + 3]));
     } else {
       for (int i = 0; i < 4; ++i) {
-        detection_data[index * 7 + 3 + i] = bbox_data[det_idx * 4 + i];
+        detection_data[index * DET_SHAPE + 3 + i] = bbox_data[det_idx * 4 + i];
       }
     }
   }
@@ -521,7 +521,7 @@ void GetDetectionsGPU(const Dtype* bbox_data, const Dtype* conf_data,
   int* idx_data = idx_blob.mutable_cpu_data();
   std::copy(indices.begin(), indices.end(), idx_data);
   // Prepare detection_blob.
-  detection_blob->Reshape(1, 1, num_det, 7);
+  detection_blob->Reshape(1, 1, num_det, DET_SHAPE);
   Dtype* detection_data = detection_blob->mutable_gpu_data();
   // NOLINT_NEXT_LINE(whitespace/operators)
   GetDetectionsKernel<Dtype><<<CAFFE_GET_BLOCKS(num_det),

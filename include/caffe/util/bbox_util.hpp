@@ -18,6 +18,8 @@
 
 #include "caffe/caffe.hpp"
 
+#define DET_SHAPE 8 //7
+
 namespace caffe {
 
 typedef EmitConstraint_EmitType EmitType;
@@ -188,7 +190,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
     vector<vector<int> >* all_neg_indices);
 
 // Retrieve bounding box ground truth from gt_data.
-//    gt_data: 1 x 1 x num_gt x 7 blob.
+//    gt_data: 1 x 1 x num_gt x 8 blob.
 //    num_gt: the number of ground truth.
 //    background_label_id: the label for background class which is used to do
 //      santity check so that no ground truth contains it.
@@ -341,7 +343,7 @@ void GetPriorBBoxes(const Dtype* prior_data, const int num_priors,
       vector<vector<float> >* prior_variances);
 
 // Get detection results from det_data.
-//    det_data: 1 x 1 x num_det x 7 blob.
+//    det_data: 1 x 1 x num_det x DET_SHAPE blob.
 //    num_det: the number of detections.
 //    background_label_id: the label for background class which is used to do
 //      santity check so that no detection contains it.

@@ -107,7 +107,7 @@ void DetectionOutputLayer<Dtype>::Forward_gpu(
 
   vector<int> top_shape(2, 1);
   top_shape.push_back(num_kept);
-  top_shape.push_back(7);
+  top_shape.push_back(DET_SHAPE);
   Dtype* top_data;
   if (num_kept == 0) {
     LOG(INFO) << "Couldn't find any detections";
@@ -118,7 +118,7 @@ void DetectionOutputLayer<Dtype>::Forward_gpu(
     // Generate fake results per image.
     for (int i = 0; i < num; ++i) {
       top_data[0] = i;
-      top_data += 7;
+      top_data += DET_SHAPE;
     }
   } else {
     top[0]->Reshape(top_shape);
@@ -152,23 +152,24 @@ void DetectionOutputLayer<Dtype>::Forward_gpu(
       }
       for (int j = 0; j < indices.size(); ++j) {
         int idx = indices[j];
-        top_data[count * 7] = i;
-        top_data[count * 7 + 1] = label;
-        top_data[count * 7 + 2] = cur_conf_data[idx];
+        top_data[count * DET_SHAPE + 0] = i;
+        top_data[count * DET_SHAPE + 1] = label;
+        top_data[count * DET_SHAPE + 2] = cur_conf_data[idx];
         for (int k = 0; k < 4; ++k) {
-          top_data[count * 7 + 3 + k] = cur_bbox_data[idx * 4 + k];
+          top_data[count * DET_SHAPE + 3 + k] = cur_bbox_data[idx * 4 + k];
         }
+        top_data[count * DET_SHAPE + 7] = idx;
         if (need_save_) {
           // Generate output bbox.
           NormalizedBBox bbox;
-          bbox.set_xmin(top_data[count * 7 + 3]);
-          bbox.set_ymin(top_data[count * 7 + 4]);
-          bbox.set_xmax(top_data[count * 7 + 5]);
-          bbox.set_ymax(top_data[count * 7 + 6]);
+          bbox.set_xmin(top_data[count * DET_SHAPE + 3]);
+          bbox.set_ymin(top_data[count * DET_SHAPE + 4]);
+          bbox.set_xmax(top_data[count * DET_SHAPE + 5]);
+          bbox.set_ymax(top_data[count * DET_SHAPE + 6]);
           NormalizedBBox out_bbox;
           OutputBBox(bbox, sizes_[name_count_], has_resize_, resize_param_,
                      &out_bbox);
-          float score = top_data[count * 7 + 2];
+          float score = top_data[count * DET_SHAPE + 2];
           float xmin = out_bbox.xmin();
           float ymin = out_bbox.ymin();
           float xmax = out_bbox.xmax();

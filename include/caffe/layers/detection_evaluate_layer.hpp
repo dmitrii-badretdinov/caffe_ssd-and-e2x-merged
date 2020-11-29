@@ -8,6 +8,9 @@
 #include "caffe/layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 
+#define DET_SHAPE 8 //7
+#define EVAL_SHAPE 10 //5
+
 namespace caffe {
 
 /**
@@ -37,14 +40,14 @@ class DetectionEvaluateLayer : public Layer<Dtype> {
    * @brief Evaluate the detection output.
    *
    * @param bottom input Blob vector (exact 2)
-   *   -# @f$ (1 \times 1 \times N \times 7) @f$
+   *   -# @f$ (1 \times 1 \times N \times DET_SHAPE) @f$
    *      N detection results.
-   *   -# @f$ (1 \times 1 \times M \times 7) @f$
+   *   -# @f$ (1 \times 1 \times M \times 8) @f$
    *      M ground truth.
    * @param top Blob vector (length 1)
-   *   -# @f$ (1 \times 1 \times N \times 4) @f$
+   *   -# @f$ (1 \times 1 \times N \times OUT_SHAPE) @f$
    *      N is the number of detections, and each row is:
-   *      [image_id, label, confidence, true_pos, false_pos]
+   *      [image_id, label, confidence, true_pos, false_pos, xmin, ymin, xmax, ymax, idx]
    */
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);

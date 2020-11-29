@@ -52,7 +52,7 @@ void DetectionEvaluateLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   CHECK_LE(count_, sizes_.size());
   CHECK_EQ(bottom[0]->num(), 1);
   CHECK_EQ(bottom[0]->channels(), 1);
-  CHECK_EQ(bottom[0]->width(), 7);
+  CHECK_EQ(bottom[0]->width(), DET_SHAPE);
   CHECK_EQ(bottom[1]->num(), 1);
   CHECK_EQ(bottom[1]->channels(), 1);
   CHECK_EQ(bottom[1]->width(), 8);
@@ -67,12 +67,12 @@ void DetectionEvaluateLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
     if (det_data[1] != -1) {
       ++num_valid_det;
     }
-    det_data += 7;
+    det_data += DET_SHAPE;
   }
   top_shape.push_back(num_pos_classes + num_valid_det);
-  // Each row is a 5 dimension vector, which stores
-  // [image_id, label, confidence, true_pos, false_pos]
-  top_shape.push_back(5);
+  // Each row is a EVAL_SHAPE dimension vector, which stores
+  // [image_id, label, confidence, true_pos, false_pos, xmin, ymin, xmax, ymax, idx]
+  top_shape.push_back(EVAL_SHAPE);
   top[0]->Reshape(top_shape);
 }
 
@@ -124,15 +124,21 @@ void DetectionEvaluateLayer<Dtype>::Forward_cpu(
     if (c == background_label_id_) {
       continue;
     }
-    top_data[num_det * 5] = -1;
-    top_data[num_det * 5 + 1] = c;
+    top_data[num_det * EVAL_SHAPE + 0] = -1;
+    top_data[num_det * EVAL_SHAPE + 1] = c;
     if (num_pos.find(c) == num_pos.end()) {
-      top_data[num_det * 5 + 2] = 0;
+      top_data[num_det * EVAL_SHAPE + 2] = 0;
     } else {
-      top_data[num_det * 5 + 2] = num_pos.find(c)->second;
+      top_data[num_det * EVAL_SHAPE + 2] = num_pos.find(c)->second;
     }
-    top_data[num_det * 5 + 3] = -1;
-    top_data[num_det * 5 + 4] = -1;
+    top_data[num_det * EVAL_SHAPE + 3] = -1;
+    top_data[num_det * EVAL_SHAPE + 4] = -1;
+    // NEW outputs
+    top_data[num_det * EVAL_SHAPE + 5] = -1;
+    top_data[num_det * EVAL_SHAPE + 6] = -1;
+    top_data[num_det * EVAL_SHAPE + 7] = -1;
+    top_data[num_det * EVAL_SHAPE + 8] = -1;
+    top_data[num_det * EVAL_SHAPE + 9] = -1;
     ++num_det;
   }
 
@@ -151,11 +157,17 @@ void DetectionEvaluateLayer<Dtype>::Forward_cpu(
         }
         const vector<NormalizedBBox>& bboxes = iit->second;
         for (int i = 0; i < bboxes.size(); ++i) {
-          top_data[num_det * 5] = image_id;
-          top_data[num_det * 5 + 1] = label;
-          top_data[num_det * 5 + 2] = bboxes[i].score();
-          top_data[num_det * 5 + 3] = 0;
-          top_data[num_det * 5 + 4] = 1;
+          top_data[num_det * EVAL_SHAPE + 0] = image_id;
+          top_data[num_det * EVAL_SHAPE + 1] = label;
+          top_data[num_det * EVAL_SHAPE + 2] = bboxes[i].score();
+          top_data[num_det * EVAL_SHAPE + 3] = 0;
+          top_data[num_det * EVAL_SHAPE + 4] = 1;
+          // NEW outputs
+          top_data[num_det * EVAL_SHAPE + 5] = bboxes[i].xmin();
+          top_data[num_det * EVAL_SHAPE + 6] = bboxes[i].ymin();
+          top_data[num_det * EVAL_SHAPE + 7] = bboxes[i].xmax();
+          top_data[num_det * EVAL_SHAPE + 8] = bboxes[i].ymax();
+          top_data[num_det * EVAL_SHAPE + 9] = bboxes[i].idx();
           ++num_det;
         }
       }
@@ -171,11 +183,17 @@ void DetectionEvaluateLayer<Dtype>::Forward_cpu(
         if (label_bboxes.find(label) == label_bboxes.end()) {
           // No ground truth for current label. All detections become false_pos.
           for (int i = 0; i < bboxes.size(); ++i) {
-            top_data[num_det * 5] = image_id;
-            top_data[num_det * 5 + 1] = label;
-            top_data[num_det * 5 + 2] = bboxes[i].score();
-            top_data[num_det * 5 + 3] = 0;
-            top_data[num_det * 5 + 4] = 1;
+            top_data[num_det * EVAL_SHAPE + 0] = image_id;
+            top_data[num_det * EVAL_SHAPE + 1] = label;
+            top_data[num_det * EVAL_SHAPE + 2] = bboxes[i].score();
+            top_data[num_det * EVAL_SHAPE + 3] = 0;
+            top_data[num_det * EVAL_SHAPE + 4] = 1;
+            // NEW outputs
+            top_data[num_det * EVAL_SHAPE + 5] = bboxes[i].xmin();
+            top_data[num_det * EVAL_SHAPE + 6] = bboxes[i].ymin();
+            top_data[num_det * EVAL_SHAPE + 7] = bboxes[i].xmax();
+            top_data[num_det * EVAL_SHAPE + 8] = bboxes[i].ymax();
+            top_data[num_det * EVAL_SHAPE + 9] = bboxes[i].idx();
             ++num_det;
           }
         } else {
@@ -192,9 +210,15 @@ void DetectionEvaluateLayer<Dtype>::Forward_cpu(
           // Sort detections in descend order based on scores.
           std::sort(bboxes.begin(), bboxes.end(), SortBBoxDescend);
           for (int i = 0; i < bboxes.size(); ++i) {
-            top_data[num_det * 5] = image_id;
-            top_data[num_det * 5 + 1] = label;
-            top_data[num_det * 5 + 2] = bboxes[i].score();
+            top_data[num_det * EVAL_SHAPE + 0] = image_id;
+            top_data[num_det * EVAL_SHAPE + 1] = label;
+            top_data[num_det * EVAL_SHAPE + 2] = bboxes[i].score();
+            // NEW outputs
+            top_data[num_det * EVAL_SHAPE + 5] = bboxes[i].xmin();
+            top_data[num_det * EVAL_SHAPE + 6] = bboxes[i].ymin();
+            top_data[num_det * EVAL_SHAPE + 7] = bboxes[i].xmax();
+            top_data[num_det * EVAL_SHAPE + 8] = bboxes[i].ymax();
+            top_data[num_det * EVAL_SHAPE + 9] = bboxes[i].idx();
             if (!use_normalized_bbox_) {
               OutputBBox(bboxes[i], sizes_[count_], has_resize_,
                          resize_param_, &(bboxes[i]));
@@ -215,19 +239,19 @@ void DetectionEvaluateLayer<Dtype>::Forward_cpu(
                   (!evaluate_difficult_gt_ && !gt_bboxes[jmax].difficult())) {
                 if (!visited[jmax]) {
                   // true positive.
-                  top_data[num_det * 5 + 3] = 1;
-                  top_data[num_det * 5 + 4] = 0;
+                  top_data[num_det * EVAL_SHAPE + 3] = 1;
+                  top_data[num_det * EVAL_SHAPE + 4] = 0;
                   visited[jmax] = true;
                 } else {
                   // false positive (multiple detection).
-                  top_data[num_det * 5 + 3] = 0;
-                  top_data[num_det * 5 + 4] = 1;
+                  top_data[num_det * EVAL_SHAPE + 3] = 0;
+                  top_data[num_det * EVAL_SHAPE + 4] = 1;
                 }
               }
             } else {
               // false positive.
-              top_data[num_det * 5 + 3] = 0;
-              top_data[num_det * 5 + 4] = 1;
+              top_data[num_det * EVAL_SHAPE + 3] = 0;
+              top_data[num_det * EVAL_SHAPE + 4] = 1;
             }
             ++num_det;
           }

@@ -16,6 +16,8 @@
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/bbox_util.hpp"
 
+#define DET_SHAPE 8 //7
+
 using namespace boost::property_tree;  // NOLINT(build/namespaces)
 
 namespace caffe {
@@ -55,9 +57,9 @@ class DetectionOutputLayer : public Layer<Dtype> {
    *   -# @f$ (N \times 2 \times C3 \times 1) @f$
    *      the prior bounding boxes with C3 values.
    * @param top output Blob vector (length 1)
-   *   -# @f$ (1 \times 1 \times N \times 7) @f$
+   *   -# @f$ (1 \times 1 \times N \times DET_SHAPE) @f$
    *      N is the number of detections after nms, and each row is:
-   *      [image_id, label, confidence, xmin, ymin, xmax, ymax]
+   *      [image_id, label, confidence, xmin, ymin, xmax, ymax, idx]
    */
   virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top);
