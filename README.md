@@ -1,6 +1,6 @@
 # Description
 This repository shows how to reproduce an error on Linux that appears when rebuilding [E2X][1] as stated in their [repository][3].  
-The build was done for Python 3, CPU-only.  
+The error was produced on Ubuntu 20.04 for Python 3, CPU-only.  
 The `ssd` branch contains an already merged version of the [caffe/ssd][2] branch and the [E2X repository][3] with every merge conflict being resolved in favor of the latter.
 
 # Steps to reproduce
@@ -10,14 +10,25 @@ However, the part about customizing `/etc/apt/sources.list` from [this page][5] 
 To reproduce the error, use the following commands to install the dependencies:  
 ```
 sudo apt-get update
-sudo apt-get install cmake
+sudo apt-get install -y cmake
 sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
 sudo apt-get install --no-install-recommends libboost-all-dev
-sudo apt-get install libatlas-base-dev
+sudo apt-get install -y libatlas-base-dev
 sudo apt-get install python-dev
-sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+sudo apt-get install -y libgflags-dev libgoogle-glog-dev liblmdb-dev
 ```
-In the directory of this repository:  
+After that, we need to install OpenCV 3.x from their [releases][6]. We'll follow [this manual][7]  
+In the unpacked OpenCV release (substitute `%P%` with the number of cores for compilation):
+```
+sudo apt install g++
+sudo apt install make
+mkdir build
+cd build
+cmake ../opencv-3.4.12
+make -j%P%
+sudo make install
+```
+In SSD-E2X folder:  
 ```
 mkdir build
 cd build
@@ -45,3 +56,5 @@ If anybody knows how to fix this error, feel free to contact me through issues o
 [3]: https://github.com/gudovskiy/e2x
 [4]: https://caffe.berkeleyvision.org/install_apt.html
 [5]: https://caffe.berkeleyvision.org/install_apt_debian.html
+[6]: https://github.com/opencv/opencv/releases/tag/3.4.12
+[7]: https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
