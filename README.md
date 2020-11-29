@@ -11,7 +11,7 @@ To reproduce the error, use the following commands to install the dependencies:
 ```
 sudo apt-get update
 sudo apt-get install -y cmake
-sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler
+sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libhdf5-serial-dev protobuf-compiler
 sudo apt-get install --no-install-recommends libboost-all-dev
 sudo apt-get install -y libatlas-base-dev
 sudo apt-get install python-dev
