@@ -14,7 +14,7 @@ sudo apt-get install cmake
 sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libhdf5-serial-dev protobuf-compiler
 sudo apt-get install --no-install-recommends libboost-all-dev
 sudo apt-get install libatlas-base-dev
-sudo apt-get install python-dev
+sudo apt-get install python3-dev
 sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
 ```
 After that, we need to install OpenCV 3.x from their [releases][6]. We'll follow [this manual][7]  
