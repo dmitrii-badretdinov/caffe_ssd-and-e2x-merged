@@ -10,12 +10,12 @@ However, the part about customizing `/etc/apt/sources.list` from [this page][5] 
 To reproduce the error, use the following commands to install the dependencies:  
 ```
 sudo apt-get update
-sudo apt-get install -y cmake
+sudo apt-get install cmake
 sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libhdf5-serial-dev protobuf-compiler
 sudo apt-get install --no-install-recommends libboost-all-dev
-sudo apt-get install -y libatlas-base-dev
+sudo apt-get install libatlas-base-dev
 sudo apt-get install python-dev
-sudo apt-get install -y libgflags-dev libgoogle-glog-dev liblmdb-dev
+sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
 ```
 After that, we need to install OpenCV 3.x from their [releases][6]. We'll follow [this manual][7]  
 In the unpacked OpenCV release (substitute `%P%` with the number of cores for compilation):
