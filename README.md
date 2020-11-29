@@ -24,7 +24,7 @@ cd build
 cmake ..
 make all
 ```
-In the result you will get the following error from `make`:
+On the 20th percent, you will get the following error from `make`:
 ```
 detection_evaluate_layer.cpp: In member function ‘virtual void caffe::DetectionEvaluateLayer<Dtype>::Forward_cpu(const std::vector<caffe::Blob<Dtype>*>&, const std::vector<caffe::Blob<Dtype>*>&)’:
 detection_evaluate_layer.cpp:170:58: error: ‘const value_type’ {aka ‘const class caffe::NormalizedBBox’} has no member named ‘idx’
