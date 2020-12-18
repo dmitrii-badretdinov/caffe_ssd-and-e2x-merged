@@ -1,6 +1,6 @@
 # Description
 This repository shows how to reproduce an error on Linux that appears when rebuilding [E2X][1] as stated in their [repository][3].  
-The error was produced on Ubuntu 20.04 for Python 3, CPU-only.  
+The error was produced on Ubuntu 20.04 for Python 2, CPU-only.  
 This repository contains an already merged version of the [caffe/ssd][2] branch and the [E2X repository][3] with every merge conflict being resolved in favor of the latter.
 
 # Steps to reproduce
