@@ -126,6 +126,7 @@ message NormalizedBBox {
   optional bool difficult = 6;
   optional float score = 7;
   optional float size = 8;
+  optional int32 idx = 9;
 }
 
 // Annotation for each object instance.
