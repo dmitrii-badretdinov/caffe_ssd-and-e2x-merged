@@ -30,7 +30,7 @@ def parse_args():
                         # VGGNet_512x512
 
     parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use',
-                        default=0, type=int)
+                        default=None, type=int)
 
     parser.add_argument('--batch_size', dest='batch_size', help='if caffe crashes with memory error, reduce the batch size',
                         default=16, type=int)
