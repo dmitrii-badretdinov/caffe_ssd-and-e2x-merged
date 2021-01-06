@@ -19,7 +19,7 @@ def parse_args():
     """
     parser = ArgumentParser(description='E2X for SSD')
 
-    parser.add_argument('--folder_name', dest='folder_name', help='Folder to analyze. Example: python ./examples/e2x/intgrads/experiments_ssd_e2x.py --folder_name ./data/VOC0712',
+    parser.add_argument('--folder_name', dest='folder_name', help='Folder to analyze. Example: python3 ./examples/e2x/intgrads/experiments_ssd_e2x.py --folder_name ./data/VOC0712',
                         default='~/gitlab/ssd/data/VOC0712', type = str)
 
     parser.add_argument('--dataset', dest='dataset', help='choose dataset which was used to train network: ImageNet/VOC/KITTI',
