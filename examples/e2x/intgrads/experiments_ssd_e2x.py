@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # make sure there is this environment variable
     caffe_root = os.environ["CAFFE_ROOT"]
     os.chdir(caffe_root)
-    print caffe_root
+    print(caffe_root)
     sys.path.append(caffe_root+'/examples/e2x/pda')
     import utils_detectors as utlC
     import utils_data as utlD
@@ -128,7 +128,7 @@ if __name__ == '__main__':
                 listFP.append(b) # index of FPs
         # sanity check
         if (TP+FN) != G:
-            print 'Some FNs are not covered due to low probability: (TP+FN) =', TP+FN, 'should be equal to G =', G
+            print('Some FNs are not covered due to low probability: (TP+FN) =', TP+FN, 'should be equal to G =', G)
         # construct filtered list of detections
         BB = TP+FP+FN
         detsBB = np.zeros((BB, dets.shape[1]))
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         detsBB[TP:TP+FP] = dets[listFP]
         detsBB[TP+FP:BB] = dets[listFN]
         # print statistics
-        print "Statistics for", fnL[i], "Number of GTs = ", G,', TP = ', TP, ', FP = ', FP, ', FN = ', FN
+        print("Statistics for", fnL[i], "Number of GTs = ", G,', TP = ', TP, ', FP = ', FP, ', FN = ', FN)
         # segmentation
         imSeg = im.copy() # CHW->HWC
         imSeg = imSeg[:,:,::-1]/255.0 # BGR->RGB + [0:1]
@@ -195,7 +195,7 @@ if __name__ == '__main__':
             det = detsBB[b]
             index = int(detsBB[b, 9])
             #
-            print "analyzing detection {} out of {} ({}) for file: {}, class: {}, confidence: {}, segments: {}" \
+            print("analyzing detection {} out of {} ({}) for file: {}, class: {}, confidence: {}, segments: {}") \
                 .format(b, BB, result, fnL[i], labelName, pconf, unique_segments)
             # E2X: backward passes
             start_time = time.time()
@@ -222,14 +222,14 @@ if __name__ == '__main__':
             if 1:
                 save_path = path_results+'/{}_{}'.format(fnL[i], b)
                 if os.path.exists(save_path+'.png'):
-                    print 'Results for', save_path, ' exist, will move to the next detection.'
+                    print('Results for', save_path, ' exist, will move to the next detection.')
                     continue
                 # plot and save the results
                 l = int(label)
                 utlV.plot_ssd(method, im, dataset, maskSeg, l, det, save_path)
                 np.savez(save_path, maskSeg, det)
             
-            print "--- Total time took {:.3f} seconds ---".format((time.time() - start_time))
+            print("--- Total time took {:.3f} seconds ---".format((time.time() - start_time)))
     #
     print('END TIME', datetime.datetime.time(datetime.datetime.now()), run_count)
     del netP, netD, blL, fnL
