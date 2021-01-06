@@ -30,7 +30,7 @@ def get_caffenet(dataset, netname):
 
     p = os.environ["CAFFE_ROOT"] + '/models'
     if dataset == "ImageNet":
-        print dataset, ' model is not found'
+        print(dataset, ' model is not found')
     elif dataset == "VOC":
         blobnames = ['mbox_conf_flatten'] # SSD output layer
         if netname=='VGGNet_300x300':
@@ -40,9 +40,9 @@ def get_caffenet(dataset, netname):
             model_path = p + '/VGGNet/VOC0712/SSD_512x512/'
             param_fn = model_path + 'VGG_VOC0712_SSD_512x512_iter_130000.caffemodel'
         else:
-            print dataset, ' model is not found'
+            print(dataset, ' model is not found')
     else:
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
     #
     netP_fn = model_path + 'deploy_viz.prototxt' # prediction model network
     netP = caffe.Net(netP_fn,  param_fn, caffe.TEST)
@@ -69,7 +69,7 @@ def decode_ssd_result(d):
     elif all(d == np.array([1,1])):
         result = 'FN'
     else:
-        print 'Something is wrong in detection!'
+        print('Something is wrong in detection!')
 
     return result
 

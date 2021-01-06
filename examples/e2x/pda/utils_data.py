@@ -52,20 +52,20 @@ def transformBlob(dataset, net):
 def get_data(dataset, net, folder_name):
     if dataset == "ImageNet":
         #return get_imagenet_data(net)
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
     elif dataset == "VOC":
         return get_voc_data(net, folder_name)
     else:
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
 #
 def get_classnames(dataset):
     if dataset == "ImageNet":
         #return np.loadtxt(open('~/data/ilsvrc12/synset_words.txt'), dtype=object, delimiter='\n')
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
     elif dataset == "VOC":
         return ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train","tvmonitor"]
     else:
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
 #
 colors = {  'background' : (0,0,0),
 
@@ -98,7 +98,7 @@ def get_color(dataset, classname):
     if dataset == "VOC":
         return colors[classname]
     else:
-        print dataset, " is not supported"
+        print(dataset, " is not supported")
 #
 def get_classnums(dataset):
     """ Returns the number of classes """
@@ -124,7 +124,7 @@ def get_voc_data(net, folder_name):
     img_list = f.readlines()
     N = len(img_list)
     data_folder = '/u/big/trainingdata/VOCdevkit/' # points to VOCdevkit
-    print "Number of images in dataset = ", N
+    print("Number of images in dataset = ", N)
     # fill up data list
     B,C,H,W = net.blobs['data'].data.shape
     blL = np.zeros((N,C,H,W))
@@ -138,7 +138,7 @@ def get_voc_data(net, folder_name):
         imPath = l[0]
         gtPath = l[1]
         fname = os.path.basename(imPath)
-        print i, imPath
+        print(i, imPath)
         # open image
         im = caffe.io.load_image('{}/{}'.format(data_folder, imPath))
         Y,X,Z = im.shape
