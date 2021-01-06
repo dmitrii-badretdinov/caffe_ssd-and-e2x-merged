@@ -10,7 +10,7 @@ from scipy.stats import pearsonr
 
 caffe_root = os.environ["CAFFE_ROOT"]
 os.chdir(caffe_root)
-print caffe_root
+print(caffe_root)
 base = caffe_root+'/examples/e2x'
 refPda = base + 'pda/results/VOC/VGGNet_300x300/conditional'
 refLime = base + 'lime/results/VOC/VGGNet_300x300_slic_1000_10000'
