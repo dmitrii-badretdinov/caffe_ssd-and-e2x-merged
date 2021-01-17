@@ -138,7 +138,7 @@ def get_voc_data(net, folder_name):
         imPath = l[0]
         gtPath = l[1]
         fname = os.path.basename(imPath)
-        print(i, imPath)
+        print(i, data_folder, imPath)
         # open image
         im = caffe.io.load_image('{}/{}'.format(data_folder, imPath))
         Y,X,Z = im.shape
