@@ -200,8 +200,7 @@ if __name__ == '__main__':
             det = detsBB[b]
             index = int(detsBB[b, 9])
             #
-            print("analyzing detection {} out of {} ({}) for file: {}, class: {}, confidence: {}, segments: {}") \
-                .format(b, BB, result, fnL[i], labelName, pconf, unique_segments)
+            print("analyzing detection {} out of {} ({}) for file: {}, class: {}, confidence: {}, segments: {}".format(b, BB, result, fnL[i], labelName, pconf, unique_segments))
             # E2X: backward passes
             start_time = time.time()
             blobs = []
