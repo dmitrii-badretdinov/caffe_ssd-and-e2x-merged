@@ -20,7 +20,7 @@ def parse_args():
     """
     parser = ArgumentParser(description='E2X for SSD')
 
-    parser.add_argument('--folder_name', dest='folder_name', help='Folder to analyze. Example: python3 ./examples/e2x/intgrads/experiments_ssd_e2x.py --folder_name ./data/VOC0712',
+    parser.add_argument('--folder_name', dest='folder_name', help='Folder to analyze. Example: python3 ./examples/e2x/intgrads/experiments_ssd_e2x.py --folder_name ./data/VOC0712 --batch_size 2 --num_segments 10 --num_samples 4',
                         default='~/gitlab/ssd/data/VOC0712', type = str)
 
     parser.add_argument('--dataset', dest='dataset', help='choose dataset which was used to train network: ImageNet/VOC/KITTI',
@@ -71,15 +71,12 @@ if __name__ == '__main__':
     netP, netD, blobnames = utlC.get_caffenet(dataset, net_name)
     # get the data
     blL, gtL, fnL = utlD.get_data(dataset, netP, folder_name)
-    print("Got data without errors")
     #
     test_indices = range(len(fnL))
     # get the label names
     classes = utlD.get_classnames(dataset)
     CC = utlD.get_classnums(dataset) # num of classes
-    C = CC-1 # num of classes - background
-    print("Got classnames")
-    
+    C = CC-1 # num of classes - background    
     # make folder for saving the results if it doesn't exist
     path_results = './examples/e2x/intgrads/results_{}/{}/{}_{}_{}_{}'.format(method, dataset, net_name, segmentation_method, num_segments, num_samples)
     if not os.path.exists(path_results):

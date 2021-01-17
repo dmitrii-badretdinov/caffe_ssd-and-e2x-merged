@@ -46,8 +46,8 @@ def plot_ssd(method, im, dataset, mask, l, det, save_path):
     pIm[:,:,2] += pB
     # bar image
     bIm = np.zeros((H,20,C))
-    bIm[0:H/2,::] = np.stack( (np.tile(np.linspace(0, 255, num=H/2)[..., np.newaxis],20), np.tile(np.linspace(0, 255, num=H/2)[..., np.newaxis],20), np.tile(np.linspace(192, 255, num=H/2)[..., np.newaxis],20)), axis=2 )
-    bIm[H/2:H,::] = np.stack( (np.tile(np.linspace(255, 192, num=H/2)[..., np.newaxis],20), np.tile(np.linspace(255, 0, num=H/2)[..., np.newaxis],20), np.tile(np.linspace(255, 0, num=H/2)[..., np.newaxis],20)), axis=2 )
+    bIm[0:H//2,::] = np.stack( (np.tile(np.linspace(0, 255, num=H//2)[..., np.newaxis],20), np.tile(np.linspace(0, 255, num=H//2)[..., np.newaxis],20), np.tile(np.linspace(192, 255, num=H//2)[..., np.newaxis],20)), axis=2 )
+    bIm[H//2:H,::] = np.stack( (np.tile(np.linspace(255, 192, num=H//2)[..., np.newaxis],20), np.tile(np.linspace(255, 0, num=H//2)[..., np.newaxis],20), np.tile(np.linspace(255, 0, num=H//2)[..., np.newaxis],20)), axis=2 )
     # overlayed image
     gIm = 0.299*im[:,:,2]+0.587*im[:,:,1]+0.114*im[:,:,0]
     oIm = np.tile(gIm[..., np.newaxis],3)
@@ -55,7 +55,7 @@ def plot_ssd(method, im, dataset, mask, l, det, save_path):
     cv2.addWeighted(pIm, alpha, im, 1-alpha, 0, oIm)
     cv2.rectangle(oIm, (xmin, ymin), (xmax, ymax), (0,255,255), 2)#, (colorsB[l],colorsG[l],colorsR[l]), 1)
     # draw
-    back = np.tile(200, 3) # color of the border
+    back = (int(200), int(200), int(200)) # color of the border
     im1 = cv2.copyMakeBorder(dIm, 40,10,10,10, cv2.BORDER_CONSTANT, value=back)
     im2 = cv2.copyMakeBorder(pIm, 40,10,10,10, cv2.BORDER_CONSTANT, value=back)
     im3 = cv2.copyMakeBorder(bIm, 40,10,10,90, cv2.BORDER_CONSTANT, value=back)
@@ -78,7 +78,7 @@ def plot_ssd(method, im, dataset, mask, l, det, save_path):
     cv2.putText(im2, text2, textOrg,    fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
     cv2.putText(im3, text3, textOrg,    fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
     cv2.putText(im3, textP3,(30,0+40),  fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
-    cv2.putText(im3, textZ3,(30,H/2+40),fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
+    cv2.putText(im3, textZ3,(30,H//2+40),fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
     cv2.putText(im3, textN3,(30,H+40),  fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
     cv2.putText(im4, text4, textOrg,    fontFace, fontScale, (0,0,0), thickness, 0, bottomLeftOrigin=False)
     #

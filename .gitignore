@@ -101,3 +101,10 @@ MANIFEST-*
 jobs
 temp
 examples/*/*lmdb
+
+# results
+*.npz
+*.png
+D
+# *.npz
+# e
