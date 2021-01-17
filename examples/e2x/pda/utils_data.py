@@ -166,7 +166,7 @@ def get_voc_data(net, folder_name):
         G = len(gts) # number of groundtruths
         gtBlob = np.zeros((G,8))
         difficult = 0.0 # always not hard
-        for g in xrange(0,G):
+        for g in range(0,G):
             gtBlob[g] = [0.0,gts[g][0],0.0,gts[g][1]/float(X),gts[g][2]/float(Y),gts[g][3]/float(X),gts[g][4]/float(Y),difficult]
         # creating lists
         blL[i] = imBlob

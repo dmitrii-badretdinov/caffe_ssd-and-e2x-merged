@@ -11,6 +11,7 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from skimage.segmentation import felzenszwalb, slic, quickshift
 import copy
 #
+print("E2X script started")
 method = 'E2X'
 confidence_threshold = 0.5 # confidence threshold should be like in your real detector. threshold in deploy_viz.prototxt should be low to cover all detections including FNs.
 #
@@ -70,16 +71,20 @@ if __name__ == '__main__':
     netP, netD, blobnames = utlC.get_caffenet(dataset, net_name)
     # get the data
     blL, gtL, fnL = utlD.get_data(dataset, netP, folder_name)
+    print("Got data without errors")
     #
     test_indices = range(len(fnL))
     # get the label names
     classes = utlD.get_classnames(dataset)
     CC = utlD.get_classnums(dataset) # num of classes
     C = CC-1 # num of classes - background
+    print("Got classnames")
+    
     # make folder for saving the results if it doesn't exist
     path_results = './examples/e2x/intgrads/results_{}/{}/{}_{}_{}_{}'.format(method, dataset, net_name, segmentation_method, num_segments, num_samples)
     if not os.path.exists(path_results):
         os.makedirs(path_results)
+    print("Created a folder for results")
     # ------------------------ EXPERIMENTS ------------------------
     # target function (mapping input features to output confidences)
     [TB, TC, TH, TW] = netD.blobs['data'].data.shape
@@ -114,7 +119,7 @@ if __name__ == '__main__':
         listTP = []
         listFN = []
         listFP = []
-        for b in xrange(0,B):
+        for b in range(0,B):
             if (utlC.decode_ssd_result(dets[b,3:5]) == 'TP'):
                 if (dets[b,2] > confidence_threshold):
                     TP += 1
@@ -163,7 +168,7 @@ if __name__ == '__main__':
         ##
         pathLin = np.linspace(0.0, 1.0, num=num_samples)
         pathMag = np.zeros((num_samples, unique_segments))
-        for s in xrange(unique_segments):
+        for s in range(unique_segments):
             pathMag[:, s] = np.random.permutation(pathLin)
         #pathMag = np.random.uniform(1.0/num_samples, 1.0, size=num_samples*unique_segments).reshape((num_samples, unique_segments))
         #pathMag = np.random.uniform(0.0, 1.0, size=num_samples*unique_segments).reshape((num_samples, unique_segments))
@@ -171,9 +176,9 @@ if __name__ == '__main__':
         #pathMag = (np.random.randint(0, num_samples, size=num_samples*unique_segments).reshape((num_samples, unique_segments)) + 1.0) / num_samples
         #print(pathMag)
         maskMag = np.zeros((num_samples, TC, TH, TW))
-        for sample in xrange(num_samples):
+        for sample in range(num_samples):
             segmMag = np.zeros((TH, TW))
-            for segment in xrange(unique_segments):
+            for segment in range(unique_segments):
                 segmMag[segments == segment] = pathMag[sample, segment]
             maskMag[sample, :] = segmMag
         ##
@@ -183,7 +188,7 @@ if __name__ == '__main__':
         blOrig = np.tile(bl[np.newaxis, :], (num_samples, 1, 1, 1))
         fwdApprox = blOrig * maskMag
         # do analysis for EACH detection
-        for b in xrange(BB):
+        for b in range(BB):
             #
             run_count = run_count + 1
             #
@@ -200,7 +205,7 @@ if __name__ == '__main__':
             # E2X: backward passes
             start_time = time.time()
             blobs = []
-            for s in xrange(num_samples):
+            for s in range(num_samples):
                 fwdBatch[s%batch_size] = fwdApprox[s]
                 #
                 if (s % batch_size) == (batch_size-1):
