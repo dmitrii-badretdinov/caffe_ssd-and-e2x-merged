@@ -26,7 +26,7 @@ sudo apt install g++
 sudo apt install make
 mkdir build
 cd build
-cmake ../opencv-3.4.12
+sudo cmake ../opencv-3.4.12
 make -j%P%
 sudo make install
 ```
