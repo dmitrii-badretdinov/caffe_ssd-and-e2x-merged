@@ -39,6 +39,9 @@ caffe_option(USE_LEVELDB "Build with levelDB" ON)
 caffe_option(USE_LMDB "Build with lmdb" OFF)
 caffe_option(ALLOW_LMDB_NOLOCK "Allow MDB_NOLOCK when reading LMDB files (only if necessary)" OFF)
 
+# ---[ CUDA options
+set(CUDA_ARCH_NAME "Maxwell")
+
 # ---[ Dependencies
 include(cmake/Dependencies.cmake)
 
