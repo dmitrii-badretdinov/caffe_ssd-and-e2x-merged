@@ -68,12 +68,15 @@ if __name__ == '__main__':
     num_samples = args.num_samples
     #
     utlC.set_caffe_mode(gpu_id)
+    print("Getting the net")
     netP, netD, blobnames = utlC.get_caffenet(dataset, net_name)
     # get the data
+    print("Getting the data")
     blL, gtL, fnL = utlD.get_data(dataset, netP, folder_name)
     #
     test_indices = range(len(fnL))
     # get the label names
+    print("Getting classnames")
     classes = utlD.get_classnames(dataset)
     CC = utlD.get_classnums(dataset) # num of classes
     C = CC-1 # num of classes - background    
