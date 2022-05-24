@@ -52,6 +52,7 @@ detection_evaluate_layer.cpp:221:60: error: ‘__gnu_cxx::__alloc_traits<std::al
 ```
 The function `.idx()` has not been used by the original [Caffe_ssd][2] branch.  
 If anybody knows how to fix this error, feel free to contact me through issues or by email dmitriybadretdinov@gmail.com.  
+
 UPDATE: The [ssd](https://github.com/dmitrii-badretdinov/caffe_ssd-and-e2x-merged/tree/ssd) branch has an unconfirmed [fix](https://github.com/dmitrii-badretdinov/caffe_ssd-and-e2x-merged/commit/ab4dd2a7d7df41a20e6ccf524c85458700c9c781) to the described bug.
 
 [1]: http://arxiv.org/abs/1811.08011
